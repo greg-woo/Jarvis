@@ -2,6 +2,10 @@
 //http://eloquentjavascript.net/09_regexp.html
 //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 
+//const { task } = require("gulp");
+
+localStorage.setItem("Tasks", JSON.stringify([{name: "Get five clients", finished: false}, {name: "Finish project", finished: false}, {name: "Call Pablo", finished: true}]))
+
 
 var messages = [], //array that hold the record of each string in chat
   lastUserMessage = "", //keeps track of the most recent input string from the user
@@ -74,10 +78,19 @@ function chatbotResponse() {
     botMessage = "Good luck!"
   }
   else if (text.toLowerCase().includes("good morning"))
-    botMessage = "Good morning!\nHere are your tasks for the day: \n- task 1 \n- task 2"
+  {  
+    botMessage = "Good morning!\nHere are your tasks for the day:"
+    JSON.parse(localStorage.getItem("Tasks")).filter(task => !task.finished).map(task => botMessage += "\n - " + task.name)
+  }
   else if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("list") || text.toLowerCase().includes("what are my")))
   {
-    botMessage = "Here are your tasks for the day: \n- task 1 \n- task 2"
+    botMessage = "Here are your tasks for the day: \n"
+    JSON.parse(localStorage.getItem("Tasks")).filter(task => !task.finished).map(task => botMessage += "\n - " + task.name)
+  }
+  else if (text.toLowerCase().includes("tasks") && (text.toLowerCase().includes("completed") || text.toLowerCase().includes("finished")))
+  {
+    botMessage = "Here are your finished tasks: "
+    JSON.parse(localStorage.getItem("Tasks")).filter(task => task.finished).map(task => botMessage += "\n - " + task.name)
   }
   else if (text.toLowerCase().includes("hello"))
     botMessage = "Hello! \nHow can I help you today?"
