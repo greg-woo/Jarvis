@@ -4,7 +4,14 @@
 
 //const { task } = require("gulp");
 
-localStorage.setItem("Tasks", JSON.stringify([{name: "Get five clients", finished: false}, {name: "Finish project", finished: false}, {name: "Call Pablo", finished: true}]))
+localStorage.setItem("Tasks", JSON.stringify(
+  [
+  {name: "Get five clients", finished: false}, 
+  {name: "Finish project", finished: false}, 
+  {name: "Call Pablo", finished: true},
+  {name: "Finish mockup", finished: false},
+  {name: "Prepare for meeting", finished: true}
+  ]))
 
 
 var messages = [], //array that hold the record of each string in chat
