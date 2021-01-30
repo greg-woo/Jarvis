@@ -8,6 +8,10 @@ var messages = [], //array that hold the record of each string in chat
   botMessage = "", //var keeps track of what the chatbot is going to say
   botName = 'Chatbot', //name of the chatbot
   talking = true; //when false the speach function doesn't work
+
+var messageHelp
+var askedForHelp = false
+var userWantsHelp = false
 //
 //
 //****************************************************************
@@ -19,17 +23,76 @@ var messages = [], //array that hold the record of each string in chat
 //****************************************************************
 //edit this function to change what the chatbot says
 function chatbotResponse() {
-  talking = true;
-  botMessage = "I'm confused"; //the default message
-
-  if (lastUserMessage === 'hi' || lastUserMessage =='hello') {
-    const hi = ['hi','howdy','hello']
-    botMessage = hi[Math.floor(Math.random()*(hi.length))];;
+  var text = lastUserMessage
+  if (userWantsHelp && text.toLowerCase().includes("development") || text.toLowerCase().includes("developing") || text.toLowerCase().includes("revenue") || text.toLowerCase().includes("index") || text.toLowerCase().includes("growth"))
+  {
+    const department = "Development"
+    const rec = getRecommendation(department)
+    messageHelp = "Hi " + rec[0].name + "! \nI have a " + department + " issue. Could I ask you for some help?"
+    askedForHelp = true
+    botMessage = "Based on people's availabilities right now, I recommend that you ask: " + rec[0].name + ".\nDo you want me to send them the following message:\n" + messageHelp
   }
-
-  if (lastUserMessage === 'name') {
-    botMessage = 'My name is ' + botName;
+  if (userWantsHelp && (text.toLowerCase().includes("it") || text.toLowerCase().includes("technical") || text.toLowerCase().includes("tech support") || text.toLowerCase().includes("troubleshooting") || text.toLowerCase().includes("software")))
+  {
+    const department = "IT"
+    const rec = getRecommendation(department)
+    messageHelp = "Hi " + rec[0].name + "! \nI have an " + department + " issue. Could I ask you for some help?"
+    askedForHelp = true
+    botMessage = "Based on people's availabilities right now, I recommend that you ask: " + rec[0].name + ".\nDo you want me to send them the following message:\n" + messageHelp
   }
+  if (userWantsHelp && text.toLowerCase().includes("analysis") || text.toLowerCase().includes("key consumer"))
+  {
+    const department = "Analysis"
+    const rec = getRecommendation(department)
+    messageHelp = "Hi " + rec[0].name + "! \nI have an " + department + " issue. Could I ask you for some help?"
+    askedForHelp = true
+    botMessage = "Based on people's availabilities right now, I recommend that you ask: " + rec[0].name + ".\nDo you want me to send them the following message:\n" + messageHelp
+  }
+  if (userWantsHelp && text.toLowerCase().includes("data analytics") || text.toLowerCase().includes("trends") || text.toLowerCase().includes("pattern recognition"))
+  {
+    const department = "Data Analytics"
+    const rec = getRecommendation(department)
+    messageHelp = "Hi " + rec[0].name + "! \nI have a " + department + " issue. Could I ask you for some help?"
+    askedForHelp = true
+    botMessage = "Based on people's availabilities right now, I recommend that you ask: " + rec[0].name + ".\nDo you want me to send them the following message:\n" + messageHelp
+  }
+  if (askedForHelp && text.toLowerCase().includes("yes"))
+  {
+    askedForHelp = false
+    userWantsHelp = false
+    botMessage = "You need help"
+  }
+  if (askedForHelp && text.toLowerCase().includes("no"))
+  {
+    askedForHelp = false
+    userWantsHelp = false
+    botMessage = "Okay! Is there anything else that I can help you with?"
+  }
+  if (!askedForHelp && text.toLowerCase().includes("no"))
+  {
+    userWantsHelp = false
+    botMessage = "Good luck!"
+  }
+  if (text.toLowerCase().includes("good morning"))
+    botMessage = "Good morning!\nHere are your tasks for the day: \n- task 1 \n- task 2"
+  if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("list") || text.toLowerCase().includes("what are my")))
+  {
+    botMessage = "Here are your tasks for the day: \n- task 1 \n- task 2"
+  }
+  if (text.toLowerCase().includes("hello"))
+    botMessage = "Hello! \nHow can I help you today?"
+  if (text.toLowerCase().includes("task finished"))
+    botMessage = "Good work! I've removed it from your remaining tasks!\nDo you want to start a new task or take a short break?"
+  if (text.toLowerCase().includes("break"))
+    botMessage = "You've earned it! I'll leave you alone for 15 minutes and then check back in!"
+  if (text.toLowerCase().includes("start task"))
+    botMessage = "Great motivation!"
+  if (text.toLowerCase().includes("help"))
+  {
+    userWantsHelp = true
+    botMessage = "Ask me your question and I'll point you in the right direction."
+  }
+  else botMessage = "I'm sorry but I'm not sure what that means. \nIs there something I can help you with?"
 }
 //****************************************************************
 //****************************************************************
@@ -103,4 +166,11 @@ function keyPress(e) {
 //this function is set to run when the users brings focus to the chatbox, by clicking on it
 function placeHolder() {
   document.getElementById("chatbox").placeholder = "";
+}
+
+function getRecommendation(field)
+{
+    //const devProfiles = JSON.parse(localStorage.getItem("Profiles")).map(profile => ({name: profile.Name, special: profile.Specializations.map((special) => special.field)})).filter(mem => (mem.special.includes(field)))
+    //return devProfiles
+    return "Bob"
 }
