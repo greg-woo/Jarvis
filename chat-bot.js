@@ -89,6 +89,10 @@ function chatbotResponse() {
     botMessage = "Good morning!\nHere are your tasks for the day:"
     JSON.parse(localStorage.getItem("Tasks")).filter(task => !task.finished).map(task => botMessage += "\n - " + task.name)
   }
+  else if (text.toLowerCase().includes("add task"))
+  {
+    addTask("Hello");
+  }
   else if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("list") || text.toLowerCase().includes("what are my")))
   {
     botMessage = "Here are your tasks for the day: \n"
@@ -192,5 +196,10 @@ function getRecommendation(field)
 {
     const devProfiles = JSON.parse(localStorage.getItem("Profiles")).map(profile => ({name: profile.Name, special: profile.Specializations.map((special) => special.field)})).filter(mem => (mem.special.includes(field)))
     return devProfiles
-    return "Bob"
+    // return "Bob"
+}
+
+function addTask(word) 
+{
+  document.getElementById('taskList').innerHTML += ('<div class="d-flex align-items-center"><label><input type="checkbox" class="option-input radio"><span class="label-text">' + word + '</span></label></div>'); 
 }
