@@ -357,9 +357,14 @@
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                               31st January</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">11:00AM</div>
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" id="currentDate">
+                                                Jan 31st</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id=currentTime></div>
+                                            <script>
+                                                var today = new Date();
+                                                var date = today.getHours() + ":" + today.getMinutes();
+                                                currentTime.innerHTML = date;
+                                            </script>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -573,11 +578,11 @@
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
 
-    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <!-- <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script> -->
+    <!-- <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script> -->
 
     <!-- Load our React component. -->
-    <script type="module" src="client\src\components\App.js" crossorigin></script>
+    <!-- <script type="module" src="client\src\components\App.js" crossorigin></script> -->
 
 
     <script src="chat-bot.js"></script>
