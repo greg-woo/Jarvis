@@ -177,7 +177,6 @@ function chatbotResponse() {
   {
     botMessage = "Congratulations! One task less!"
     $(document.getElementById("task1button")).click()
-    $(document.getElementById("task1")).css("text-decoration-line", "line-through")
   }
   else if (text.toLowerCase().includes("break"))
     botMessage = "You've earned it! I'll leave you alone for 15 minutes and then check back in!"
