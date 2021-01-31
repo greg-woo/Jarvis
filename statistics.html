@@ -20,6 +20,91 @@
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
+
+    <title>smoothed line | amCharts</title>
+    <meta name="description" content="chart created using amCharts live editor" />
+    
+    <!-- amCharts javascript sources -->
+    <script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+    <script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
+    
+
+    <!-- amCharts javascript code -->
+    <script type="text/javascript">
+        AmCharts.makeChart("chartdiv",
+            {
+                "type": "serial",
+                "categoryField": "category",
+                "autoMarginOffset": 40,
+                "marginRight": 60,
+                "marginTop": 60,
+                "colors": [
+                    "#024cf9"
+                ],
+                "startDuration": 1,
+                "fontSize": 13,
+                "theme": "default",
+                "touchClickDuration": 4,
+                "categoryAxis": {
+                    "gridPosition": "start",
+                    "fontSize": 12,
+                    "gridAlpha": 0.26,
+                    "gridCount": 83,
+                    "gridThickness": 2,
+                    "minorTickLength": -2
+                },
+                "trendLines": [],
+                "graphs": [
+                    {
+                        "balloonText": "[[title]] of [[category]]:[[value]]",
+                        "bullet": "round",
+                        "bulletSize": 10,
+                        "id": "AmGraph-1",
+                        "lineThickness": 3,
+                        "title": "graph 1",
+                        "type": "smoothedLine",
+                        "valueField": "Stress Score"
+                    }
+                ],
+                "guides": [],
+                "valueAxes": [
+                    {
+                        "id": "Days",
+                        "title": ""
+                    },
+                    {
+                        "id": "ValueAxis-2"
+                    }
+                ],
+                "allLabels": [],
+                "balloon": {},
+                "titles": [],
+                "dataProvider": [
+                    {
+                        "category": "Monday",
+                        "Stress Score": "6"
+                    },
+                    {
+                        "category": "Tuesday",
+                        "Stress Score": "7"
+                    },
+                    {
+                        "category": "Wednesday",
+                        "Stress Score": "4"
+                    },
+                    {
+                        "category": "Thursday",
+                        "Stress Score": "3"
+                    },
+                    {
+                        "category": "Friday",
+                        "Stress Score": "7"
+                    }
+                ]
+            }
+        );
+    </script>
+
 </head>
 
 <body id="page-top">
@@ -346,7 +431,7 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Your Yearly Productivity Evolution</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Your Weekly Productivity Evolution</h6>
                                     
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
@@ -366,7 +451,7 @@
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
+                                        <div id="chartdiv" style="width: 100%; height: 400px; background-color: #FFFFFF;" ></div>
                                     </div>
                                 </div>
                             </div>
