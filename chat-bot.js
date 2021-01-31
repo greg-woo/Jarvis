@@ -28,6 +28,10 @@ var Calendar = {
   "Jill": {
     "2021-01-30": [{ title: "Coffee with Carl", startTime: "11:00", endTime: "11:30" }],
     "2021-01-31": [{ title: "Deadline for report numbers", startTime: "16:00", endTime: "16:15" }]
+  },
+  "Brian": {
+    "2021-01-30": [{ title: "Development project pitch", startTime: "9:30", endTime: "11:30" }],
+    "2021-01-31": [{ title: "Dinner with Charles", startTime: "20:00", endTime: "23:00" }]
   }
 }
 
@@ -49,8 +53,9 @@ var profiles = [{
   "Name": "Brian",
   "id": "83762453",
   "Specializations": [{ "field": "IT", "level": "advanced" },
-  { "field": "Data Analytics", "level": "advanced" }],
-  "calendar-link": "jills-calendar-1"
+  { "field": "Data Analytics", "level": "advanced" },
+  { "field": "Analysis", "level": "moderate" }],
+  "calendar-link": "briahelpns-calendar-1"
 }]
 
 localStorage.setItem('Profiles', JSON.stringify(profiles));
@@ -60,6 +65,8 @@ localStorage.setItem('Calendar', JSON.stringify(Calendar));
 var messageHelp
 var askedForHelp = false
 var userWantsHelp = false
+var botOfferedHelp = false
+var botFollowUp = false
 
 
 
@@ -132,38 +139,69 @@ var wantsAdvice = false
 //****************************************************************
 //****************************************************************
 //edit this function to change what the chatbot says
+function flaskRequest() {
+  var body =  [
+    { "make":"Porsche", "model":"911S" },
+    { "make":"Mercedes-Benz", "model":"220SE" },
+    { "make":"Jaguar","model": "Mark VII" }
+  ];
+  var text = lastUserMessage
+  let request = new XMLHttpRequest();
+  request.open("POST", "http://127.0.0.1:5000/receiver")
+  request.send(body.toString())
+  return
+}
+
 function chatbotResponse() {
   var text = lastUserMessage
-  if (userWantsHelp && text.toLowerCase().includes("development") || text.toLowerCase().includes("developing") || text.toLowerCase().includes("revenue") || text.toLowerCase().includes("index") || text.toLowerCase().includes("growth")) {
+  if ((userWantsHelp || text.toLowerCase().includes("help")) && (text.toLowerCase().includes("development") || text.toLowerCase().includes("developing") || text.toLowerCase().includes("revenue") || text.toLowerCase().includes("index") || text.toLowerCase().includes("growth"))) {
     const department = "Development"
     const rec = getRecommendation(department)
     messageHelp = "Hi " + rec[0].name + "! \nI have a " + department + " issue. Could I ask you for some help?"
     askedForHelp = true
-    botMessage = "Based on people's availabilities right now and their expertise, I recommend that you ask: " + rec[0].name + "."
+    botMessage = "Based on people's availabilities right now and their expertise in " + department + " I recommend that you ask: " + rec[0].name + "."
   }
-  else if (userWantsHelp && (text.toLowerCase().includes("it") || text.toLowerCase().includes("technical") || text.toLowerCase().includes("tech support") || text.toLowerCase().includes("troubleshooting") || text.toLowerCase().includes("software"))) {
+  else if ((userWantsHelp || text.toLowerCase().includes("help")) && (text.toLowerCase().includes("it") || text.toLowerCase().includes("technical") || text.toLowerCase().includes("tech support") || text.toLowerCase().includes("troubleshoot") || text.toLowerCase().includes("software"))) {
     const department = "IT"
     const rec = getRecommendation(department)
     messageHelp = "Hi " + rec[0].name + "! \nI have an " + department + " issue. Could I ask you for some help?"
     askedForHelp = true
-    botMessage = "Based on people's availabilities right now and their expertise, I recommend that you ask: " + rec[0].name + "."
+    botMessage = "Based on people's availabilities right now and their expertise in " + department + " I recommend that you ask: " + rec[0].name + "."
   }
-  else if (userWantsHelp && text.toLowerCase().includes("analysis") || text.toLowerCase().includes("key consumer")) {
+  else if ((userWantsHelp || text.toLowerCase().includes("help")) && (text.toLowerCase().includes("analysis") || text.toLowerCase().includes("key consumer"))) {
     const department = "Analysis"
     const rec = getRecommendation(department)
     messageHelp = "Hi " + rec[0].name + "! \nI have an " + department + " issue. Could I ask you for some help?"
     askedForHelp = true
-    botMessage = "Based on people's availabilities right now and their expertise, I recommend that you ask: " + rec[0].name + "."
+    botMessage = "Based on people's availabilities right now and their expertise in " + department + " I recommend that you ask: " + rec[0].name + "."
   }
-  else if (userWantsHelp && text.toLowerCase().includes("data analytics") || text.toLowerCase().includes("trends") || text.toLowerCase().includes("pattern recognition")) {
+  else if ((userWantsHelp || text.toLowerCase().includes("help")) && (text.toLowerCase().includes("data analytics") || text.toLowerCase().includes("trends") || text.toLowerCase().includes("pattern recognition"))) {
     const department = "Data Analytics"
     const rec = getRecommendation(department)
     messageHelp = "Hi " + rec[0].name + "! \nI have a " + department + " issue. Could I ask you for some help?"
     askedForHelp = true
-    botMessage = "Based on people's availabilities right now and their expertise, I recommend that you ask: " + rec[0].name + "."
+    botMessage = "Based on people's availabilities right now and their expertise in " + department + " I recommend that you ask: " + rec[0].name + "."
   }
-  else if (text.toLowerCase().includes("good morning") || text.toLowerCase().includes("morning") || text.toLowerCase().includes("hi") || text.toLowerCase().includes("hello")) {
+  else if (text.toLowerCase().includes("good morning") || text.toLowerCase().includes("morning") || text.toLowerCase().includes("hi") || text.toLowerCase().includes("hello") || text.toLowerCase().includes("hey")) {
     botMessage = "Hello! Your tasks for the day are on the right in the order that I recommend."
+  }
+  else if (text.toLowerCase().includes("thanks") || text.toLowerCase().includes("ok") || text.toLowerCase().includes("perfect")|| text.toLowerCase().includes("amazing")|| text.toLowerCase().includes("great")|| text.toLowerCase().includes("thank you")) {
+    botMessage = "No problem, glad I could help! Do you still need help?"
+    botOfferedHelp = true
+  }
+  else if (botFollowUp) {
+    if (text.toLowerCase().includes("yes")) {
+      userWantsHelp = true
+    }
+  }
+  else if (text.toLowerCase().includes("how are you")) {
+    botMessage = "I'm good, thanks! Is there anything I can help you with?"
+    botOfferedHelp = true
+  }
+  else if (botOfferedHelp && (text.toLowerCase().includes("no") || text.toLowerCase().includes("nope") || text.toLowerCase().includes("nah"))) {
+    botMessage = "Great, glad I could help"
+    botOfferedHelp = false
+    userWantsHelp = false
   }
   else if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("new") || text.toLowerCase().includes("add") || text.toLowerCase().includes("create")))
   {
@@ -181,15 +219,20 @@ function chatbotResponse() {
   else if (text.toLowerCase().includes("break")) {
     botMessage = "You've earned it! I'll leave you alone for 15 minutes and then check back in!"
     changeStatus();
-  } else if (text.toLowerCase().includes("help")) {
+  } 
+  else if (text.toLowerCase().includes("help")|| text.toLowerCase().includes("assistance")|| (botOfferedHelp && (text.toLowerCase().includes("yes") ||text.toLowerCase().includes("yeah") ||text.toLowerCase().includes("yup") || text.toLowerCase().includes("please")))) {
+    botOfferedHelp = false
     userWantsHelp = true
     botMessage = "Ask me your question and I'll point you in the right direction."
   }
-  else if (text.toLowerCase().includes("commands"))
+  else if (text.toLowerCase().includes("commands") || text.toLowerCase().includes("can you do"))
   {
     botMessage = "Based on what you ask me, I can create new tasks, mark them as completed, recommend someone to ask for help if you are stuck, and so much more..."
   }
-  else botMessage = "I'm sorry but I'm not sure what that means. \nIs there something else I can help you with?"
+  else {
+    botMessage = "I'm sorry but I'm not sure what that means. \nIs there something else I can help you with?"
+    botOfferedHelp = true;
+  }
 }
 function ScheduleProvider() {
   var available_people = []
