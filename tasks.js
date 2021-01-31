@@ -1,10 +1,13 @@
+
 $(document).ready(function() {
     $('input[type=checkbox]').change(function() {
     
     if (this.checked) {
     $(this).next(".label-text").css("text-decoration-line", "line-through");
-    } else {
+    
+} else {
     $(this).next(".label-text").css("text-decoration-line", "none");
+    
     }
     
     });
@@ -18,6 +21,26 @@ $(document).ready(function() {
     //     });
 
     });
+
+// document.addEventListener("DOMContentLoaded", function(event) {
+//     /* DOM is ready, so we can query for its elements */
+//     var dragonHealth = document.getElementById("progbar").aria-valuenow;
+//     console.log(dragonHealth);
+//     // 410
+    
+//     /*additional code for comment*/
+//     document.querySelector('checkTask').addEventListener("change", function(event){
+//         if(this.checked) {
+//             // Checkbox is checked..
+//            document.getElementById("progbar").aria-valuenow += 10;
+//         } else {
+//             document.getElementById("progbar").aria-valuenow -= 10;
+
+//         }
+//             // Checkbox is not checked..
+//     });
+//     //
+//     })
 
 //     localStorage.setItem("mytime", Date.now());
 

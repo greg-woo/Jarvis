@@ -6,11 +6,11 @@
 
 localStorage.setItem("Tasks", JSON.stringify(
   [
-  {name: "Get five clients", finished: false}, 
-  {name: "Finish project", finished: false}, 
-  {name: "Call Pablo", finished: true},
-  {name: "Finish mockup", finished: false},
-  {name: "Prepare for meeting", finished: true}
+    { name: "Get five clients", finished: false },
+    { name: "Finish project", finished: false },
+    { name: "Call Pablo", finished: true },
+    { name: "Finish mockup", finished: false },
+    { name: "Prepare for meeting", finished: true }
   ]))
 
 
@@ -23,6 +23,67 @@ var messages = [], //array that hold the record of each string in chat
 var messageHelp
 var askedForHelp = false
 var userWantsHelp = false
+
+
+
+
+// document.addEventListener("DOMContentLoaded", function(event) {
+//     /* DOM is ready, so we can query for its elements */
+//     var dragonHealth = document.getElementById("progbar").aria-valuenow;
+//     console.log(dragonHealth);
+//     // 410
+
+//     /*additional code for comment*/
+//     document.querySelector('checkTask').addEventListener("change", function(event){
+//         if(this.checked) {
+//             // Checkbox is checked..
+//            document.getElementById("progbar").aria-valuenow += 10;
+//         } else {
+//             document.getElementById("progbar").aria-valuenow -= 10;
+
+//         }
+//             // Checkbox is not checked..
+//     });
+//     //
+// });
+
+var numberTasksTotal = 0;
+var numberTasksLeft = 1;
+
+function UpdatePercentage() {
+
+  var allCheckBoxes = document.getElementsByClassName("option-input radio");
+
+  numberTasksLeft = 0;
+  var tasksCompleted = 0;
+  for (var i = 0; i < allCheckBoxes.length; i++) {
+    if (allCheckBoxes[i].checked) {
+      tasksCompleted++;
+    } else {
+      numberTasksLeft++;
+    }
+  }
+  numberTasksTotal = tasksCompleted + numberTasksLeft;
+  var percentage = (tasksCompleted / numberTasksTotal) * 100;
+  document.getElementById("completed_percentage").innerHTML = percentage.toFixed(0)  + "%";
+  document.getElementById("progbar").style.width = percentage.toFixed(0)  + "%";
+  document.getElementById("tasksLeft").innerHTML = numberTasksLeft;
+  // if (this.checked) {
+  //   tasksCompleted ++;
+  //   percentage = tasksCompleted/numberTasksTotal * 100;
+  //   numberTasksLeft --;
+  //   document.getElementById("completed_percentage").innerHTML = percentage+"%";
+  // } else {
+  //   tasksCompleted --;
+  //   percentage = tasksCompleted/numberTasksTotal * 100;
+  //   numberTasksLeft ++;
+  //   document.getElementById("completed_percentage").innerHTML = percentage+"%";
+  // }
+
+}
+
+
+
 //
 //
 //****************************************************************
@@ -35,71 +96,63 @@ var userWantsHelp = false
 //edit this function to change what the chatbot says
 function chatbotResponse() {
   var text = lastUserMessage
-  if (userWantsHelp && text.toLowerCase().includes("development") || text.toLowerCase().includes("developing") || text.toLowerCase().includes("revenue") || text.toLowerCase().includes("index") || text.toLowerCase().includes("growth"))
-  {
+  if (userWantsHelp && text.toLowerCase().includes("development") || text.toLowerCase().includes("developing") || text.toLowerCase().includes("revenue") || text.toLowerCase().includes("index") || text.toLowerCase().includes("growth")) {
     const department = "Development"
     const rec = getRecommendation(department)
     messageHelp = "Hi " + rec[0].name + "! \nI have a " + department + " issue. Could I ask you for some help?"
     askedForHelp = true
     botMessage = "Based on people's availabilities right now, I recommend that you ask: " + rec[0].name + ".\nDo you want me to send them the following message:\n" + messageHelp
   }
-  else if (userWantsHelp && (text.toLowerCase().includes("it") || text.toLowerCase().includes("technical") || text.toLowerCase().includes("tech support") || text.toLowerCase().includes("troubleshooting") || text.toLowerCase().includes("software")))
-  {
+  else if (userWantsHelp && (text.toLowerCase().includes("it") || text.toLowerCase().includes("technical") || text.toLowerCase().includes("tech support") || text.toLowerCase().includes("troubleshooting") || text.toLowerCase().includes("software"))) {
     const department = "IT"
     const rec = getRecommendation(department)
     messageHelp = "Hi " + rec[0].name + "! \nI have an " + department + " issue. Could I ask you for some help?"
     askedForHelp = true
     botMessage = "Based on people's availabilities right now, I recommend that you ask: " + rec[0].name + ".\nDo you want me to send them the following message:\n" + messageHelp
   }
-  else if (userWantsHelp && text.toLowerCase().includes("analysis") || text.toLowerCase().includes("key consumer"))
-  {
+  else if (userWantsHelp && text.toLowerCase().includes("analysis") || text.toLowerCase().includes("key consumer")) {
     const department = "Analysis"
     const rec = getRecommendation(department)
     messageHelp = "Hi " + rec[0].name + "! \nI have an " + department + " issue. Could I ask you for some help?"
     askedForHelp = true
     botMessage = "Based on people's availabilities right now, I recommend that you ask: " + rec[0].name + ".\nDo you want me to send them the following message:\n" + messageHelp
   }
-  else if (userWantsHelp && text.toLowerCase().includes("data analytics") || text.toLowerCase().includes("trends") || text.toLowerCase().includes("pattern recognition"))
-  {
+  else if (userWantsHelp && text.toLowerCase().includes("data analytics") || text.toLowerCase().includes("trends") || text.toLowerCase().includes("pattern recognition")) {
     const department = "Data Analytics"
     const rec = getRecommendation(department)
     messageHelp = "Hi " + rec[0].name + "! \nI have a " + department + " issue. Could I ask you for some help?"
     askedForHelp = true
     botMessage = "Based on people's availabilities right now, I recommend that you ask: " + rec[0].name + ".\nDo you want me to send them the following message:\n" + messageHelp
   }
-  else if (askedForHelp && text.toLowerCase().includes("yes"))
-  {
+  else if (askedForHelp && text.toLowerCase().includes("yes")) {
     askedForHelp = false
     userWantsHelp = false
     botMessage = "You need help"
   }
-  else if (askedForHelp && text.toLowerCase().includes("no"))
-  {
+  else if (askedForHelp && text.toLowerCase().includes("no")) {
     askedForHelp = false
     userWantsHelp = false
     botMessage = "Okay! Is there anything else that I can help you with?"
   }
-  else if (!askedForHelp && text.toLowerCase().includes("no"))
-  {
+  else if (!askedForHelp && text.toLowerCase().includes("no")) {
     userWantsHelp = false
     botMessage = "Good luck!"
   }
-  else if (text.toLowerCase().includes("good morning"))
-  {  
+  else if (text.toLowerCase().includes("good morning")) {
     botMessage = "Good morning!\nHere are your tasks for the day:"
     JSON.parse(localStorage.getItem("Tasks")).filter(task => !task.finished).map(task => botMessage += "\n - " + task.name)
   }
-  else if (text.toLowerCase().includes("add task"))
-  {
+  else if (text.toLowerCase().includes("add task")) {
     addTask("Hello");
+    numberTasksLeft += 1;
+    document.getElementById("tasksLeft").innerHTML = numberTasksLeft;
+
   }
-  else if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("list") || text.toLowerCase().includes("what are my")))
-  {
+  else if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("list") || text.toLowerCase().includes("what are my"))) {
     botMessage = "Here are your tasks for the day: \n"
     JSON.parse(localStorage.getItem("Tasks")).filter(task => !task.finished).map(task => botMessage += "\n - " + task.name)
   }
-  else if (text.toLowerCase().includes("tasks") && (text.toLowerCase().includes("completed") || text.toLowerCase().includes("finished")))
-  {
+  else if (text.toLowerCase().includes("tasks") && (text.toLowerCase().includes("completed") || text.toLowerCase().includes("finished"))) {
     botMessage = "Here are your finished tasks: "
     JSON.parse(localStorage.getItem("Tasks")).filter(task => task.finished).map(task => botMessage += "\n - " + task.name)
   }
@@ -111,8 +164,7 @@ function chatbotResponse() {
     botMessage = "You've earned it! I'll leave you alone for 15 minutes and then check back in!"
   else if (text.toLowerCase().includes("start task"))
     botMessage = "Great motivation!"
-  else if (text.toLowerCase().includes("help"))
-  {
+  else if (text.toLowerCase().includes("help")) {
     userWantsHelp = true
     botMessage = "Ask me your question and I'll point you in the right direction."
   }
@@ -182,7 +234,7 @@ function keyPress(e) {
   }
   if (key == 38) {
     console.log('hi')
-      //document.getElementById("chatbox").value = lastUserMessage;
+    //document.getElementById("chatbox").value = lastUserMessage;
   }
 }
 
@@ -192,14 +244,12 @@ function placeHolder() {
   document.getElementById("chatbox").placeholder = "";
 }
 
-function getRecommendation(field)
-{
-    const devProfiles = JSON.parse(localStorage.getItem("Profiles")).map(profile => ({name: profile.Name, special: profile.Specializations.map((special) => special.field)})).filter(mem => (mem.special.includes(field)))
-    return devProfiles
-    // return "Bob"
+function getRecommendation(field) {
+  const devProfiles = JSON.parse(localStorage.getItem("Profiles")).map(profile => ({ name: profile.Name, special: profile.Specializations.map((special) => special.field) })).filter(mem => (mem.special.includes(field)))
+  return devProfiles
+  // return "Bob"
 }
 
-function addTask(word) 
-{
-  document.getElementById('taskList').innerHTML += ('<div class="d-flex align-items-center"><label><input type="checkbox" class="option-input radio"><span class="label-text">' + word + '</span></label></div>'); 
+function addTask(word) {
+  document.getElementById('taskList').innerHTML += ('<div class="d-flex align-items-center"><label><input onclick = "UpdatePercentage()" type="checkbox" class="option-input radio"><span class="label-text">' + word + '</span></label></div>');
 }
