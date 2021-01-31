@@ -295,7 +295,7 @@ function newEntry() {
     //add the chatbot's name and message to the array messages
     messages.push("<b>" + botName + ":</b> " + botMessage);
     // says the message using the text to speech function written below
-    Speech(botMessage);
+    //Speech(botMessage);
     //outputs the last few array elements of messages to html
     for (var i = 1; i < 8; i++) {
       if (messages[messages.length - i])
