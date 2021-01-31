@@ -6,11 +6,11 @@
 
 localStorage.setItem("Tasks", JSON.stringify(
   [
-  {name: "Get five clients", finished: false}, 
-  {name: "Finish project", finished: false}, 
-  {name: "Call Pablo", finished: true},
-  {name: "Finish mockup", finished: false},
-  {name: "Prepare for meeting", finished: true}
+    { name: "Get five clients", finished: false },
+    { name: "Finish project", finished: false },
+    { name: "Call Pablo", finished: true },
+    { name: "Finish mockup", finished: false },
+    { name: "Prepare for meeting", finished: true }
   ]))
 
 
@@ -20,9 +20,47 @@ var messages = [], //array that hold the record of each string in chat
   botName = 'Chatbot', //name of the chatbot
   talking = true; //when false the speach function doesn't work
 
+var Calendar = {
+  "Jack": {
+    "2021-01-30": [{ title: "Daily Scrum meeting", startTime: "16:00", endTime: "16:15" }, { title: "Lunch and learn", startTime: "12:00", endTime: "13:00" }],
+    "2021-01-31": [{ title: "Project presentation", startTime: "9:00", endTime: "11:00" }]
+  },
+  "Jill": {
+    "2021-01-30": [{ title: "Coffee with Carl", startTime: "11:00", endTime: "11:30" }],
+    "2021-01-31": [{ title: "Deadline for report numbers", startTime: "16:00", endTime: "16:15" }]
+  }
+}
+
+var profiles = [{
+  "Name": "Jack",
+  "id": "27794733",
+  "Specializations": [{ "field": "IT", "level": "advanced" },
+  { "field": "Data Analytics", "level": "moderate" }],
+  "calendarId": "jacks-calendar-1"
+},
+{
+  "Name": "Jill",
+  "id": "87394788",
+  "Specializations": [{ "field": "Analysis", "level": "advanced" },
+  { "field": "Development", "level": "moderate" }],
+  "calendar-link": "jills-calendar-1"
+},
+{
+  "Name": "Brian",
+  "id": "83762453",
+  "Specializations": [{ "field": "IT", "level": "advanced" },
+  { "field": "Data Analytics", "level": "advanced" }],
+  "calendar-link": "jills-calendar-1"
+}]
+
+localStorage.setItem('Profiles', JSON.stringify(profiles));
+localStorage.setItem('Calendar', JSON.stringify(Calendar));
+
+
 var messageHelp
 var askedForHelp = false
 var userWantsHelp = false
+var wantsAdvice = false
 //
 //
 //****************************************************************
@@ -35,59 +73,54 @@ var userWantsHelp = false
 //edit this function to change what the chatbot says
 function chatbotResponse() {
   var text = lastUserMessage
-  if (userWantsHelp && text.toLowerCase().includes("development") || text.toLowerCase().includes("developing") || text.toLowerCase().includes("revenue") || text.toLowerCase().includes("index") || text.toLowerCase().includes("growth"))
-  {
+  if (userWantsHelp && text.toLowerCase().includes("development") || text.toLowerCase().includes("developing") || text.toLowerCase().includes("revenue") || text.toLowerCase().includes("index") || text.toLowerCase().includes("growth")) {
     const department = "Development"
     const rec = getRecommendation(department)
     messageHelp = "Hi " + rec[0].name + "! \nI have a " + department + " issue. Could I ask you for some help?"
     askedForHelp = true
-    botMessage = "Based on people's availabilities right now, I recommend that you ask: " + rec[0].name + ".\nDo you want me to send them the following message:\n" + messageHelp
+    botMessage = "Based on people's availabilities right now and their expertise, I recommend that you ask: " + rec[0].name + "."
   }
-  else if (userWantsHelp && (text.toLowerCase().includes("it") || text.toLowerCase().includes("technical") || text.toLowerCase().includes("tech support") || text.toLowerCase().includes("troubleshooting") || text.toLowerCase().includes("software")))
-  {
+  else if (userWantsHelp && (text.toLowerCase().includes("it") || text.toLowerCase().includes("technical") || text.toLowerCase().includes("tech support") || text.toLowerCase().includes("troubleshooting") || text.toLowerCase().includes("software"))) {
     const department = "IT"
     const rec = getRecommendation(department)
     messageHelp = "Hi " + rec[0].name + "! \nI have an " + department + " issue. Could I ask you for some help?"
     askedForHelp = true
-    botMessage = "Based on people's availabilities right now, I recommend that you ask: " + rec[0].name + ".\nDo you want me to send them the following message:\n" + messageHelp
+    botMessage = "Based on people's availabilities right now and their expertise, I recommend that you ask: " + rec[0].name + "."
   }
-  else if (userWantsHelp && text.toLowerCase().includes("analysis") || text.toLowerCase().includes("key consumer"))
-  {
+  else if (userWantsHelp && text.toLowerCase().includes("analysis") || text.toLowerCase().includes("key consumer")) {
     const department = "Analysis"
     const rec = getRecommendation(department)
     messageHelp = "Hi " + rec[0].name + "! \nI have an " + department + " issue. Could I ask you for some help?"
     askedForHelp = true
-    botMessage = "Based on people's availabilities right now, I recommend that you ask: " + rec[0].name + ".\nDo you want me to send them the following message:\n" + messageHelp
+    botMessage = "Based on people's availabilities right now and their expertise, I recommend that you ask: " + rec[0].name + "."
   }
-  else if (userWantsHelp && text.toLowerCase().includes("data analytics") || text.toLowerCase().includes("trends") || text.toLowerCase().includes("pattern recognition"))
-  {
+  else if (userWantsHelp && text.toLowerCase().includes("data analytics") || text.toLowerCase().includes("trends") || text.toLowerCase().includes("pattern recognition")) {
     const department = "Data Analytics"
     const rec = getRecommendation(department)
     messageHelp = "Hi " + rec[0].name + "! \nI have a " + department + " issue. Could I ask you for some help?"
     askedForHelp = true
-    botMessage = "Based on people's availabilities right now, I recommend that you ask: " + rec[0].name + ".\nDo you want me to send them the following message:\n" + messageHelp
+    botMessage = "Based on people's availabilities right now and their expertise, I recommend that you ask: " + rec[0].name + "."
   }
-  else if (askedForHelp && text.toLowerCase().includes("yes"))
-  {
+  else if (askedForHelp && text.toLowerCase().includes("yes")) {
     askedForHelp = false
     userWantsHelp = false
     botMessage = "You need help"
   }
-  else if (askedForHelp && text.toLowerCase().includes("no"))
-  {
+  else if (wantsAdvice) {
+    botMessage = ScheduleProvider();
+  }
+
+  else if (askedForHelp && text.toLowerCase().includes("no")) {
     askedForHelp = false
     userWantsHelp = false
     botMessage = "Okay! Is there anything else that I can help you with?"
   }
-  else if (!askedForHelp && text.toLowerCase().includes("no"))
-  {
+  else if (!askedForHelp && text.toLowerCase().includes("no")) {
     userWantsHelp = false
     botMessage = "Good luck!"
   }
-  else if (text.toLowerCase().includes("good morning"))
-  {  
-    botMessage = "Good morning!\nHere are your tasks for the day:"
-    JSON.parse(localStorage.getItem("Tasks")).filter(task => !task.finished).map(task => botMessage += "\n - " + task.name)
+  else if (text.toLowerCase().includes("good morning")) {
+    botMessage = "Good morning! Your tasks for the day are on the right in the order that I recommend"
   }
   else if (text.toLowerCase().includes("add task"))
   {
@@ -101,10 +134,13 @@ function chatbotResponse() {
     $(document.getElementById("task1button")).click()
     $(document.getElementById("task1")).css("text-decoration-line", "line-through")
   }
-  else if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("list") || text.toLowerCase().includes("what are my")))
-  {
+  else if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("list") || text.toLowerCase().includes("what are my"))) {
     botMessage = "Here are your tasks for the day: \n"
     JSON.parse(localStorage.getItem("Tasks")).filter(task => !task.finished).map(task => botMessage += "\n - " + task.name)
+  }
+  else if (text.toLowerCase().includes("tasks") && (text.toLowerCase().includes("completed") || text.toLowerCase().includes("finished"))) {
+    botMessage = "Here are your finished tasks: "
+    JSON.parse(localStorage.getItem("Tasks")).filter(task => task.finished).map(task => botMessage += "\n - " + task.name)
   }
   else if (text.toLowerCase().includes("hello"))
     botMessage = "Hello! \nHow can I help you today?"
@@ -114,12 +150,45 @@ function chatbotResponse() {
     botMessage = "You've earned it! I'll leave you alone for 15 minutes and then check back in!"
   else if (text.toLowerCase().includes("start task"))
     botMessage = "Great motivation!"
-  else if (text.toLowerCase().includes("help"))
-  {
+  else if (text.toLowerCase().includes("help")) {
     userWantsHelp = true
     botMessage = "Ask me your question and I'll point you in the right direction."
   }
   else botMessage = "I'm sorry but I'm not sure what that means. \nIs there something I can help you with?"
+}
+function ScheduleProvider() {
+  var available_people = []
+  const today = new Date()
+  const str_time = today.toJSON().toString().substring(11, 16)
+  const str_day = today.toJSON().toString().substring(0, 10)
+  for (var usr in Calendar) {
+    for (var day in Calendar[usr]) {
+      if (day === str_day) {
+        for (var event in Calendar[usr][str_day]) {
+          if (Date.parse("01/01/2011 " + Calendar[usr][str_day][0]["endTime"]) < Date.parse("01/01/2011 " + str_time) || (Date.parse("01/01/2011 " + Calendar[usr][str_day2][0]["startTime"]) > 90000 + Date.parse("01/01/2011 " + str_time))) {
+            // available_people.push(usr);
+            break;
+          }
+        }
+      }
+    }
+  }
+  response = ""
+  if (available_people.length > 1) {
+    response += "It seems like "
+    for (var i = 0; i < available_people.length - 1; i++) {
+      response += available_people[i] + ", "
+    }
+    response += "and " + available_people[available_people.length - 1] + " are available right now. Do you want to send one of them a message?"
+  }
+  if (available_people.length == 1) {
+    response += "It seems like " + available_people[0] + " is available right now. Do you want to send them a message?"
+  }
+  if (available_people.length == 0) {
+    response += "Unfortunately, it seems like no one is available right now... why not take a little coffee break to think it over?"
+  }
+  console.log(response);
+  return response;
 }
 //****************************************************************
 //****************************************************************
@@ -185,7 +254,7 @@ function keyPress(e) {
   }
   if (key == 38) {
     console.log('hi')
-      //document.getElementById("chatbox").value = lastUserMessage;
+    //document.getElementById("chatbox").value = lastUserMessage;
   }
 }
 
@@ -195,11 +264,40 @@ function placeHolder() {
   document.getElementById("chatbox").placeholder = "";
 }
 
-function getRecommendation(field)
-{
-    const devProfiles = JSON.parse(localStorage.getItem("Profiles")).map(profile => ({name: profile.Name, special: profile.Specializations.map((special) => special.field)})).filter(mem => (mem.special.includes(field)))
-    return devProfiles
-    // return "Bob"
+function getRecommendation(field) {
+  var available_peers = []
+  const devProfiles = JSON.parse(localStorage.getItem("Profiles")).map(profile => ({ name: profile.Name, special: profile.Specializations.map((special) => special.field) })).filter(mem => (mem.special.includes(field)))
+  const today = new Date();
+  const str_time = today.toJSON().toString().substring(11, 16)
+  const str_day = today.toJSON().toString().substring(0, 10)
+  var events = JSON.parse(localStorage.getItem("Calendar"))
+  var i = 0
+  while (i < devProfiles.length) {
+    var usr = devProfiles[i]
+    if (events[usr.name])
+    {  
+      var usr_events = events[usr.name][str_day]
+      //var usr_events = events[usr["name"]][str_day]
+      var available = true;
+
+      var j = 0
+      while (j < usr_events.length) {
+        var event = usr_events[j]
+        if ((Date.parse("01/01/2011 " + event["endTime"]) >= Date.parse("01/01/2011 " + str_time)) && (Date.parse("01/01/2011 " + event["startTime"]) <= 90000 + Date.parse("01/01/2011 " + str_time))) {
+          available = false;
+        }
+        j++
+      }
+      if (available) {
+        available_peers.push(usr);
+      }
+
+    }
+    i++
+  }
+  //const filtered = devProfiles.filter(value => available_peers.includes(value));
+
+  return available_peers
 }
 
 function addTask(word) 
