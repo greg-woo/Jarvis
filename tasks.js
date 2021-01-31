@@ -1,16 +1,4 @@
 
-$(document).ready(function() {
-    $('input[type=checkbox]').change(function() {
-    
-    if (this.checked) {
-    $(this).next(".label-text").css("text-decoration-line", "line-through");
-    
-} else {
-    $(this).next(".label-text").css("text-decoration-line", "none");
-    
-    }
-    
-    });
 
     // $('input[id=currentDate]').change(function() {
     
@@ -20,7 +8,6 @@ $(document).ready(function() {
         
     //     });
 
-    });
 
 // document.addEventListener("DOMContentLoaded", function(event) {
 //     /* DOM is ready, so we can query for its elements */
