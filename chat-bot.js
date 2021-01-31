@@ -209,9 +209,10 @@ function chatbotResponse() {
     botMessage = "Hello! \nHow can I help you today?"
   else if (text.toLowerCase().includes("task finished"))
     botMessage = "Good work! I've removed it from your remaining tasks!\nDo you want to start a new task or take a short break?"
-  else if (text.toLowerCase().includes("break"))
+  else if (text.toLowerCase().includes("break")) {
     botMessage = "You've earned it! I'll leave you alone for 15 minutes and then check back in!"
-  else if (text.toLowerCase().includes("start task"))
+    changeStatus();
+  } else if (text.toLowerCase().includes("start task"))
     botMessage = "Great motivation!"
   else if (text.toLowerCase().includes("help")) {
     userWantsHelp = true
@@ -365,4 +366,36 @@ function getRecommendation(field) {
 
 function addTask(word) {
   document.getElementById('taskList').innerHTML += ('<div class="d-flex align-items-center"><label><input onclick = "UpdatePercentage()" type="checkbox" class="option-input radio"><span class="label-text">' + word + '</span></label></div>');
+}
+
+var buttonStatus = document.getElementById("statusB");
+var status = 0;
+
+function changeStatus() {
+    if (status == 0) {
+      buttonStatus.style.background= "red";
+      document.getElementById("statusB").innerHTML = "Do not disturb";
+      status = 1;
+    } else {
+      buttonStatus.style.background= "#5cb85c";
+      document.getElementById("statusB").innerHTML = "Online";
+      status = 0;
+    }
+    
+}
+
+
+function downloadFile() { // create and download report
+  var filename = "weekly_report.txt";
+  var text = "This is your weekly team performance report:";
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
 }
