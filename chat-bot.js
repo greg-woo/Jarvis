@@ -162,28 +162,10 @@ function chatbotResponse() {
     askedForHelp = true
     botMessage = "Based on people's availabilities right now and their expertise, I recommend that you ask: " + rec[0].name + "."
   }
-  else if (askedForHelp && text.toLowerCase().includes("yes")) {
-    askedForHelp = false
-    userWantsHelp = false
-    botMessage = "You need help"
+  else if (text.toLowerCase().includes("good morning") || text.toLowerCase().includes("morning") || text.toLowerCase().includes("hi") || text.toLowerCase().includes("hello")) {
+    botMessage = "Hello! Your tasks for the day are on the right in the order that I recommend."
   }
-  else if (wantsAdvice) {
-    botMessage = ScheduleProvider();
-  }
-
-  else if (askedForHelp && text.toLowerCase().includes("no")) {
-    askedForHelp = false
-    userWantsHelp = false
-    botMessage = "Okay! Is there anything else that I can help you with?"
-  }
-  else if (!askedForHelp && text.toLowerCase().includes("no")) {
-    userWantsHelp = false
-    botMessage = "Good luck!"
-  }
-  else if (text.toLowerCase().includes("good morning")) {
-    botMessage = "Good morning! Your tasks for the day are on the right in the order that I recommend"
-  }
-  else if (text.toLowerCase().includes("add task"))
+  else if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("new") || text.toLowerCase().includes("add") || text.toLowerCase().includes("create")))
   {
     text = text.split("task ")[1]
     addTask(text);
@@ -191,33 +173,23 @@ function chatbotResponse() {
     document.getElementById("tasksLeft").innerHTML = numberTasksLeft;
     botMessage = "Great! New task added!"
   }
-  else if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("remove") || text.toLowerCase().includes("completed") || text.toLowerCase().includes("finished")))
+  else if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("remove") || text.toLowerCase().includes("completed") || text.toLowerCase().includes("finished") || text.toLowerCase().includes("delete")))
   {
     botMessage = "Congratulations! One task less!"
     $(document.getElementById("task1button")).click()
     $(document.getElementById("task1")).css("text-decoration-line", "line-through")
   }
-  else if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("list") || text.toLowerCase().includes("what are my"))) {
-    botMessage = "Here are your tasks for the day: \n"
-    JSON.parse(localStorage.getItem("Tasks")).filter(task => !task.finished).map(task => botMessage += "\n - " + task.name)
-  }
-  else if (text.toLowerCase().includes("tasks") && (text.toLowerCase().includes("completed") || text.toLowerCase().includes("finished"))) {
-    botMessage = "Here are your finished tasks: "
-    JSON.parse(localStorage.getItem("Tasks")).filter(task => task.finished).map(task => botMessage += "\n - " + task.name)
-  }
-  else if (text.toLowerCase().includes("hello"))
-    botMessage = "Hello! \nHow can I help you today?"
-  else if (text.toLowerCase().includes("task finished"))
-    botMessage = "Good work! I've removed it from your remaining tasks!\nDo you want to start a new task or take a short break?"
   else if (text.toLowerCase().includes("break"))
     botMessage = "You've earned it! I'll leave you alone for 15 minutes and then check back in!"
-  else if (text.toLowerCase().includes("start task"))
-    botMessage = "Great motivation!"
   else if (text.toLowerCase().includes("help")) {
     userWantsHelp = true
     botMessage = "Ask me your question and I'll point you in the right direction."
   }
-  else botMessage = "I'm sorry but I'm not sure what that means. \nIs there something I can help you with?"
+  else if (text.toLowerCase().includes("commands"))
+  {
+    botMessage = "Based on what you ask me, I can create new tasks, mark them as completed, recommend someone to ask for help if you are stuck, and so much more..."
+  }
+  else botMessage = "I'm sorry but I'm not sure what that means. \nIs there something else I can help you with?"
 }
 function ScheduleProvider() {
   var available_people = []
