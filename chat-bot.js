@@ -178,11 +178,18 @@ function chatbotResponse() {
     botMessage = "Congratulations! One task less!"
     $(document.getElementById("task1button")).click()
   }
+<<<<<<< HEAD
   else if (text.toLowerCase().includes("break")){
     botMessage = "You've earned it! I'll leave you alone for 15 minutes and then check back in!"
     changeStatus();
   }
   else if (text.toLowerCase().includes("help")) {
+=======
+  else if (text.toLowerCase().includes("break")) {
+    botMessage = "You've earned it! I'll leave you alone for 15 minutes and then check back in!"
+    changeStatus();
+  } else if (text.toLowerCase().includes("help")) {
+>>>>>>> origin/main
     userWantsHelp = true
     botMessage = "Ask me your question and I'll point you in the right direction."
   }
