@@ -91,17 +91,20 @@ function chatbotResponse() {
   }
   else if (text.toLowerCase().includes("add task"))
   {
-    addTask("Hello");
+    text = text.split("task ")[1]
+    addTask(text);
+    botMessage = "Great! New task added!"
+  }
+  else if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("remove") || text.toLowerCase().includes("completed") || text.toLowerCase().includes("finished")))
+  {
+    botMessage = "Congratulations! One task less!"
+    $(document.getElementById("task1button")).click()
+    $(document.getElementById("task1")).css("text-decoration-line", "line-through")
   }
   else if (text.toLowerCase().includes("task") && (text.toLowerCase().includes("list") || text.toLowerCase().includes("what are my")))
   {
     botMessage = "Here are your tasks for the day: \n"
     JSON.parse(localStorage.getItem("Tasks")).filter(task => !task.finished).map(task => botMessage += "\n - " + task.name)
-  }
-  else if (text.toLowerCase().includes("tasks") && (text.toLowerCase().includes("completed") || text.toLowerCase().includes("finished")))
-  {
-    botMessage = "Here are your finished tasks: "
-    JSON.parse(localStorage.getItem("Tasks")).filter(task => task.finished).map(task => botMessage += "\n - " + task.name)
   }
   else if (text.toLowerCase().includes("hello"))
     botMessage = "Hello! \nHow can I help you today?"
